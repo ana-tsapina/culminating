@@ -7,4 +7,4 @@ log = st.button("Log")
 settings = st.button("Settings")
 
 
-st.page_link(Log.py, label = "One")
+st.page_link("pages/Log.py", label = "One")
