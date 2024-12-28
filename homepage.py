@@ -1,10 +1,7 @@
 import streamlit as st 
 
-st.title("what would you like to do? ")
-
-
-log = st.button("Log")
-settings = st.button("Settings")
-
+st.title("What would you like to do? ")
 
 st.page_link("pages/Log.py", label = "One")
+st.page_link("pages/Calendar.py", label = "Calendar")
+st.page_link("pages/Settings.py", label = "Settings")
