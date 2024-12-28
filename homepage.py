@@ -13,3 +13,6 @@ if settings:
         st.switch_page("Settings.py")
 if Calendar: 
         st.switch_page("Calendar.py")
+
+
+st.page_link(Log.py, label = "One")
