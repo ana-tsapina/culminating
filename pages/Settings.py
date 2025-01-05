@@ -10,7 +10,7 @@ def begin_connection():
 def insert_data(task, duration, category, priority):
     conn = begin_connection()
     c = conn.cursor()
-    c.execute("INSERT INTO tasks (task, duration, category, priority) VALUES (?,?,?,?)", (task, duration, category, priority))
+    c.execute("INSERT INTO tasks (task, projected_end_time, due_date, category, priority) VALUES (?,?, ?, ?,?,?)", (task, projected_end_time, due_date, category, priority))
     conn.commit()
     conn.close()
 
@@ -20,11 +20,19 @@ c = conn.cursor()
 st.title("Enter key info here!")
 st.subheader("These are timeblocks that will not be altered in your scheduele. This is specifically for sleep ")
 
+task = "sleep" 
+priority = "5"
 
 sleep = st.time_input("How long do you sleep for? (Aim for 6-8hr)")
-bed_time = st.number_input("When do you go to bed? ")
-wake = st.number_input("When do you wake up? ")
+bed_time_input = st.time_input("When do you go to bed? ", step = 60)
+bed_time = bed_time_input.strftime('%H:%M')
+wake_input = st.time_input("When do you wake up? ", step = 60)
+wake = wake_input.strftime('%H%M')
+confirm = st.button("Confirm")
+     
+
 
 
 
 #some how work around time for sleep, treat as own category 
+# add or delete tasks 
