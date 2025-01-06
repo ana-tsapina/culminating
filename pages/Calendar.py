@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 import numpy as np
 from streamlit_calendar import calendar
-from pages.Settings import wake, bed_time
+#from pages.Settings import wake, bed_time
 from datetime import datetime, timedelta
 
 def begin_connection():
@@ -29,6 +29,8 @@ def load_tasks():
 def per_second_value(x): 
     return x[1]
 
+def show_suggested(): 
+    return add_to_cal
 
 calendar_options = {
     "editable": True,
@@ -39,20 +41,19 @@ calendar_options = {
         "right": "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
     },
     "slotMinTime": "06:00:00",
-    "slotMaxTime": "18:00:00",
+    "slotMaxTime": "22:00:00",
     "initialView": "resourceTimelineDay",
-    "resource": "of",
-#{"id": "a", "building": " A", "title": "Building A"},
-     #   {"id": "b", "building": "Building A", "title": "Building B"},
-      #  {"id": "c", "building": "Building B", "title": "Building C"},
-      #  {"id": "d", "building": "Building B", "title": "Building D"},
-       # {"id": "e", "building": "Building C", "title": "Building E"},
-      #  {"id": "f", "building": "Building C", "title": "Building F"},
-    
+    "resourcesGroupField": "building", 
+    "resources": [
+    {"id": "a", "building": " A", "title": "Building A"},
+    {"id": "b", "building": "Building A", "title": "Building B"},
+    {"id": "c", "building": "Building B", "title": "Building C"},
+    {"id": "d", "building": "Building B", "title": "Building D"},
+    {"id": "e", "building": "Building C", "title": "Building E"},
+    {"id": "f", "building": "Building C", "title": "Building F"},
+    ]
 }
-events_to_add = [
-    
-]
+calendar_events = []
 
 custom_css = """
     .fc-event-past {
@@ -88,22 +89,20 @@ events_with_calculated_priority = []
 # #calculation of the time it takes for each task  -> get all events + their score -> largest score = most important
 for task_index, task_info in db_rep.items():
     get_dtime = db_rep[task_index]["due_time"]
-  #  st.write(get_dtime)
     dtime = get_dtime.split(":")
     due_hours = int(dtime[0]) #set hour at which task is due  hourse
     due_minutes = int(dtime[1]) # set minutes when task is due  minutes 
     due_total_min = due_hours * 60 + due_minutes #was called total_due 
 
     get_required_time = db_rep[task_index]["duration"]
-   # st.write(get_required_time)
     required_time = get_required_time.split(":")
     required_hours = int(required_time[0])
     required_minutes = int(required_time[1])
     total_duration = required_hours * 60 + required_minutes
      
     priority_score = db_rep[task_index]["priority"]
-  #  st.write(priority_score)
     priority_sum = due_total_min + total_duration + priority_score 
+
     events_with_calculated_priority.append([task_index, priority_sum]) #_> [0, 99]
     events_with_calculated_priority.sort(reverse=True, key= per_second_value) 
 
@@ -112,19 +111,28 @@ for task_index, task_info in db_rep.items():
 
 time_passed = 0 #no time has passed YET
 
+
 for i in events_with_calculated_priority:
     add_to_cal = {}
     add_to_cal["title"] = db_rep[i[0]]['task'] 
-    add_to_cal["start_time"] = (datetime.now() + timedelta(minutes=time_passed, seconds=0)).strftime("%Y-%m-%dT%H:%M:%S") #format for calendar event
+    add_to_cal["start"] = (datetime.now() + timedelta(minutes=time_passed, seconds=0)).strftime("%Y-%m-%dT%H:%M:%S") #format for calendar event
     hours, minutes = map(int, db_rep[i[0]]["duration"].split(":"))
     time_passed += (hours*60 + minutes)
     add_to_cal["end"] = (datetime.now() + timedelta(minutes=time_passed, seconds=0)).strftime("%Y-%m-%dT%H:%M:%S")
     add_to_cal["resourceId"] = "a"
 
+#add_to_cal = [add_to_cal]
+#st.write(f"xx: {add_to_cal}")
+# events_with_calculated_priority.append(list(add_to_cal)) -> ??? DELETE PROBS
 
-display = calendar(events= events_with_calculated_priority, options=calendar_options, custom_css=custom_css)
+
+st.write(f"add to cal: {add_to_cal}")
+st.write(f"events_with_calculated_priority: {events_with_calculated_priority}")
+st.write(f"calendar events: {calendar_events}")
 
 
+
+display = calendar(events= calendar_events, options=calendar_options, custom_css=custom_css)
 
 #events_with_calculated_priority.append(add_to_cal)
 #st.write(add_to_cal)
@@ -187,6 +195,5 @@ display = calendar(events= events_with_calculated_priority, options=calendar_opt
    # addtocalendarevents["end"] = (datetime.now() + timedelta(hours=0, minutes=timeadd, seconds=0)).strftime("%Y-%m-%dT%H:%M:%S")
    # addtocalendarevents["resourceId"] = "a"
     #events_with_calculated_priority.append(addtocalendarevents)
-
 
 

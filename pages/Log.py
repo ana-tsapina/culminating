@@ -12,9 +12,9 @@ c = conn.cursor()
 def table_creation(): 
     conn = begin_connection()
     c = conn.cursor()
-    c.execute('DROP TABLE IF EXISTS tasks')
+    #c.execute('DROP TABLE IF EXISTS tasks')
     c.execute(
-        '''CREATE TABLE tasks( 
+        '''CREATE TABLE IF NOT EXISTS tasks( 
             task TEXT, 
             due_time TEXT,
             due_date TEXT,
@@ -24,6 +24,7 @@ def table_creation():
         )''') 
     conn.commit()
     conn.close()
+
 
 def insert_data(task, due_time, due_date, duration, category, priority):
     conn = begin_connection()
@@ -59,6 +60,7 @@ duration = duration_input.strftime('%H:%M')
 category = st.radio("Category", ["Physiological", "Safety and Security", "Love and Belonging", "Self-Esteem", "Self-Actualization"])
 priority = st.slider("How important is it to you?", min_value = 0, max_value = 5, value = 2)
 add = st.button('Add')
+resource_id = st.text("Determine the postion of your item: ")
 
 
 #print sucess after adding 
