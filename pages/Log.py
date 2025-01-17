@@ -2,17 +2,19 @@ import streamlit as st
 import sqlite3
 from datetime import datetime
 
+#Define function to connect to 'tasks' database, as well as to create the database 
+
 def begin_connection():
     conn = sqlite3.connect('tasks.db')
     return conn 
 
+#Connect to 'tasks' and set cursor object
 conn = begin_connection()
 c = conn.cursor()
  
 def table_creation(): 
     conn = begin_connection()
     c = conn.cursor()
-    #c.execute('DROP TABLE IF EXISTS tasks')
     c.execute(
         '''CREATE TABLE IF NOT EXISTS tasks( 
             task TEXT, 
@@ -20,16 +22,17 @@ def table_creation():
             due_date TEXT,
             duration TEXT, 
             category TEXT,
-            priority INTEGER
+            priority INTEGER,
+            resource_id TEXT
         )''') 
     conn.commit()
     conn.close()
 
-
-def insert_data(task, due_time, due_date, duration, category, priority):
+# Define functions to insert data into 'tasks' and display it  
+def insert_data(task, due_time, due_date, duration, category, priority, resource_id):
     conn = begin_connection()
     c = conn.cursor()
-    c.execute("INSERT INTO tasks (task, due_time, due_date, duration, category, priority) VALUES (?,?,?,?,?,?)", (task, due_time, due_date, duration, category, priority))
+    c.execute("INSERT INTO tasks (task, due_time, due_date, duration, category, priority, resource_id) VALUES (?,?,?,?,?, ?,?)", (task, due_time, due_date, duration, category, priority, resource_id))
     conn.commit()
     conn.close()
 
@@ -41,6 +44,7 @@ def load_tasks():
     conn.close()
     return rows 
 
+#The following code ensures that the table is created only once if it is not already existent in session state, which allows for the ability to persist state
 if "table_creation" not in st.session_state:
     st.session_state["table_creation"] = True
     table_creation()
@@ -56,35 +60,29 @@ due_time = due_input.strftime('%H:%M')
 due_date_input = st.date_input("On which day is it due?")
 due_date = due_date_input.strftime("%m/%d/%Y, %H:%M:%S")
 duration_input = st.time_input("How long will it take?")
+resource_id = "a" #resource_id is a value that is necessary to have in order to connect to the calendar, and thus is not customizable 
 duration = duration_input.strftime('%H:%M')
 category = st.radio("Category", ["Physiological", "Safety and Security", "Love and Belonging", "Self-Esteem", "Self-Actualization"])
 priority = st.slider("How important is it to you?", min_value = 0, max_value = 5, value = 2)
 add = st.button('Add')
-resource_id = st.text("Determine the postion of your item: ")
 
 
-#print sucess after adding 
+# Ensures that when 'add' is clicked, the user inputs three key data components: the name of the task, the day it is due, and the priority rating they give it. Otherwise, an error message is displayed.
+# These values are important because they are used to track and calculate the urgency of the task  
 
-#Button to add new task
 if add: 
-    insert_data(task, due_time, due_date, duration, category, priority)
-
-#if st.button("Show Tasks"): 
-    #st.dataframe()
-
-
-    #c.execute("Select * FROM tasks")
-    #rows = c.fetchall()
-   # st.write(rows)
-
-
-#Button to Show tasks 
+    if task != "" and due_date != "" and priority != "":
+        insert_data(task, due_time, due_date, duration, category, priority, resource_id)
+        st.sucess("Your task have been added! ")
+    else: 
+        st.error("You are missing key data. Please ensure that all rows are filled")
+    
+#Button to show tasks in 'tasks'
 if st.button("Show Tasks"): 
     tasks = load_tasks()
     info = c.execute("Select * FROM tasks")
     st.dataframe(info)
     rows = c.fetchall()
-
 
 
 
