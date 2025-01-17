@@ -12,5 +12,5 @@ col1, col2, col3 = st.columns(3)
 
 
 col1 = st.page_link("pages/Log.py", label = "Log", icon = "💾")
-col2 = st.page_link("pages/my_calendar.py", label = "Calendar", icon = "🗓")
-col3 = st.page_link("pages/acountability.py", label = "Reflection Zone", icon = "📝")
+col2 = st.page_link("pages/My Calendar.py", label = "Calendar", icon = "🗓")
+col3 = st.page_link("pages/Accountability.py", label = "Reflection Zone", icon = "📝")
