@@ -139,8 +139,8 @@ if clear:
 #Below are actions realated to editing the entries in the 'messages' database (allowing user to add customized messages and to to display them)
 st.subheader("Edit messages: ")
 
-encouraging_messages = st.text_input("Customize your message of encouragement")
-redirecting_messages = st.text_input("Insert a Motivational Message for Redirection")
+encouraging_messages = st.text_input("Customize your message of Encouragement")
+redirecting_messages = st.text_input("Customize your message for Redirection")
 save = st.button("Save")
 if save: 
     insert_positive(encouraging_messages, redirecting_messages)

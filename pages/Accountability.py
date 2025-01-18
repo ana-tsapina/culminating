@@ -129,7 +129,7 @@ if yes_button:
     if display: 
         st.success(display)
     else: 
-        st.error("No encouraging Messages")
+        st.error("No Encouraging Messages")
 
 
 #If user's day was spent unproductively, then the integer one is added to the 'count_no' database to track the day. These values of one are added up to represent the total number of days spent unproductively. A message of redirection is also displayed. 

@@ -73,7 +73,7 @@ add = st.button('Add')
 if add: 
     if task != "" and due_date != "" and priority != "":
         insert_data(task, due_time, due_date, duration, category, priority, resource_id)
-        st.sucess("Your task have been added! ")
+        st.success("Your task has been added! ")
     else: 
         st.error("You are missing key data. Please ensure that all rows are filled")
     

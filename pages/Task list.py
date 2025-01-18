@@ -28,10 +28,7 @@ def display_tasks():
 #Define c, which creates a cursor object so as to send commands to the databse, as well as to traverse and fetch records 
 conn = begin_connection()
 c = conn.cursor()
-
-if 'clicked' not in st.session_state:
-    st.session_state.clicked = False 
-
+ 
 st.title("List of Tasks to Do: ")
 display_tasks()
 

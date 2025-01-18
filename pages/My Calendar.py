@@ -6,9 +6,9 @@ from streamlit_calendar import calendar
 from datetime import datetime, timedelta
 
 #Page Title
-st.title("Here's your Schedule for Today") 
+st.title("Here's your Schedule") 
 
-#Creation of function that connect to tasks database, as well as add events to it and display them 
+# Creation of function that connect to tasks database, as well as add events to it and display them 
 # The function per_second_value is used to select the second element of the parameter, which later is used for a dictionary 
 
 def begin_connection():
@@ -96,9 +96,9 @@ mode = st.selectbox(
            "daygrid",
            "timegrid",
            "timeline",
-           "resource-daygrid",
-           "resource-timegrid",
-           "resource-timeline",
+          # "resource-daygrid",
+          # "resource-timegrid",
+          # "resource-timeline",
            "list",
            "multimonth",
        ),
@@ -191,6 +191,7 @@ tasks_df = pd.DataFrame(info.fetchall(), columns=['task', 'due_time', 'due_date'
 
 #Convert dataframe into a dictionary, taking data from sqlite table and putting it in a form that can be displayed and more easily manipulated with python
 db_rep = tasks_df.to_dict(orient='index')  
+
 #Create a list to store events with their corresponding priorities 
 events_with_calculated_priority = []
 
